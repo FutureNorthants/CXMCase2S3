@@ -117,6 +117,7 @@ namespace CXMCase2S3
 
         private async Task<Boolean> SaveCase(String caseDetails)
         {
+            caseDetails = caseDetails.Replace("values", "case_details");
             AmazonS3Client client = new AmazonS3Client(primaryRegion);
             try
             {
