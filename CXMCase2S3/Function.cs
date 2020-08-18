@@ -27,6 +27,8 @@ namespace CXMCase2S3
         private static readonly String secretAlias = "AWSCURRENT";
 
         private static String caseReference;
+        private static String transition;
+        private static String transitioner;
         private static String taskToken;
         private static Boolean live = false;
         private Secrets secrets = null;
@@ -39,19 +41,47 @@ namespace CXMCase2S3
                 String instance = Environment.GetEnvironmentVariable("instance");
                 JObject o = JObject.Parse(input.ToString());
                 caseReference = (string)o.SelectToken("CaseReference");
+                transition = (string)o.SelectToken("Transition");
+                transitioner = (string)o.SelectToken("Transitioner");
                 taskToken = (string)o.SelectToken("TaskToken");
-                Console.WriteLine("caseReference : " + caseReference);
+                String fileName = "";
+                try
+                {
+                    switch (transition.ToLower())
+                    {
+                        case "created":
+                            fileName = caseReference + "-CREATED";
+                            break;
+                        case "awaiting-review":
+                            fileName = caseReference + "-AWAITING-REVIEW";
+                            break;
+                        case "awaiting-customer":
+                            fileName = caseReference + "-AWAITING-CUSTOMER";
+                            break;
+                        case "close-case":
+                            fileName = caseReference + "-CLOSE-CASE";
+                            break;
+                        default:
+                            fileName = caseReference + "-UNDEFINED";
+                            break;
+                    }
+                }
+                catch
+                {
+                    await SendFailureAsync("Unexpected transition for " + caseReference, transition.ToLower(), taskToken);
+                    Console.WriteLine("ERROR : GetCaseDetailsAsync : Unexpected transition : " + transition.ToLower());
+                }
                 switch (instance.ToLower())
                 {
                     case "live":
                         live = true;
                         String caseDetailsLive = await GetCaseDetailsAsync(secrets.cxmEndPointLive, secrets.cxmAPIKeyLive);
-                        await SaveCase(caseDetailsLive);
+                        await SaveCase(fileName,caseDetailsLive);
                         await SendSuccessAsync();
                         break;
                     case "test":
                         String caseDetailsTest = await GetCaseDetailsAsync(secrets.cxmEndPointTest, secrets.cxmAPIKeyTest);
-                        await SaveCase(caseDetailsTest);
+                        await SaveCase(fileName,caseDetailsTest);
                         await SendSuccessAsync();
                         break;
                     default:
@@ -95,16 +125,59 @@ namespace CXMCase2S3
             try
             {
                 HttpResponseMessage response = cxmClient.SendAsync(request).Result;
+
                 if (response.IsSuccessStatusCode)
                 {
                     HttpContent responseContent = response.Content;
-                    caseDetails = responseContent.ReadAsStringAsync().Result;
+                    
+                    try
+                    {
+                        switch (transition.ToLower())
+                        {
+                            case "created":
+                                caseDetails = responseContent.ReadAsStringAsync().Result;
+                                break;
+                            case "awaiting-review":
+                                AwaitingReview awaitingReview = new AwaitingReview
+                                {
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(awaitingReview, Formatting.Indented);
+                                break;
+                            case "awaiting-customer":
+                                AwaitingCustomer awaitingCustomer = new AwaitingCustomer
+                                {
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(awaitingCustomer, Formatting.Indented);
+                                break;
+                            case "close-case":
+                                CloseCase closeCase = new CloseCase
+                                {
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(closeCase, Formatting.Indented);
+                                break;
+                            default:
+                                await SendFailureAsync("Unexpected transition for " + caseReference, transition.ToLower(), taskToken);
+                                Console.WriteLine("ERROR : GetCaseDetailsAsync : Unexpected transition : " + transition.ToLower());
+                                break;
+                        }
+                    }
+                    catch 
+                    {
+                        await SendFailureAsync("Unexpected transition for " + caseReference, transition.ToLower(), taskToken);
+                        Console.WriteLine("ERROR : GetCaseDetailsAsync : Unexpected transition : " + transition.ToLower());
+                    }
                 }
                 else
                 {
                     await SendFailureAsync("Getting case details for " + caseReference, response.StatusCode.ToString(), taskToken);
-                    Console.WriteLine("ERROR : GetStaffResponseAsync : " + request.ToString());
-                    Console.WriteLine("ERROR : GetStaffResponseAsync : " + response.StatusCode.ToString());
+                    Console.WriteLine("ERROR : GetCaseDetailsAsync : " + request.ToString());
+                    Console.WriteLine("ERROR : GetCaseDetailsAsync : " + response.StatusCode.ToString());
                 }
             }
             catch (Exception error)
@@ -115,7 +188,13 @@ namespace CXMCase2S3
             return caseDetails;
         }
 
-        private async Task<Boolean> SaveCase(String caseDetails)
+        private async Task<String> GetClosureDetails()
+        {
+            String caseDetails = "";
+            return caseDetails;
+        }
+
+        private async Task<Boolean> SaveCase(String fileName, String caseDetails)
         {
             caseDetails = caseDetails.Replace("values", "case_details");
             AmazonS3Client client = new AmazonS3Client(primaryRegion);
@@ -134,7 +213,7 @@ namespace CXMCase2S3
                     PutObjectRequest putRequest = new PutObjectRequest()
                     { 
                         BucketName = bucketName,
-                        Key = caseReference,
+                        Key = fileName,
                         ContentBody = caseDetails
                     };
                     await client.PutObjectAsync(putRequest);
@@ -194,10 +273,28 @@ namespace CXMCase2S3
 
         public class Secrets
         {
-            public string cxmEndPointTest { get; set; }
-            public string cxmEndPointLive { get; set; }
-            public string cxmAPIKeyTest { get; set; }
-            public string cxmAPIKeyLive { get; set; }
+            public String cxmEndPointTest { get; set; }
+            public String cxmEndPointLive { get; set; }
+            public String cxmAPIKeyTest { get; set; }
+            public String cxmAPIKeyLive { get; set; }
+        }
+
+        public class AwaitingReview
+        {
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
+        public class AwaitingCustomer
+        {
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
+        public class CloseCase
+        {
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
         }
     }
 }
