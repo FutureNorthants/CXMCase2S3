@@ -140,7 +140,7 @@ namespace CXMCase2S3
                             case "awaiting-review":
                                 AwaitingReview awaitingReview = new AwaitingReview
                                 {
-                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -149,7 +149,7 @@ namespace CXMCase2S3
                             case "awaiting-customer":
                                 AwaitingCustomer awaitingCustomer = new AwaitingCustomer
                                 {
-                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -158,7 +158,7 @@ namespace CXMCase2S3
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
                                 {
-                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -285,7 +285,7 @@ namespace CXMCase2S3
         public class AwaitingReview
         {
             public String Action = "awaiting-review";
-            public String Date { get; set; }
+            public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
@@ -293,7 +293,7 @@ namespace CXMCase2S3
         public class AwaitingCustomer
         {
             public String Action = "awaiting-customer";
-            public String Date { get; set; }
+            public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
@@ -301,7 +301,7 @@ namespace CXMCase2S3
         public class CloseCase
         {
             public String Action = "close";
-            public String Date { get; set; }
+            public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
