@@ -140,26 +140,29 @@ namespace CXMCase2S3
                             case "awaiting-review":
                                 AwaitingReview awaitingReview = new AwaitingReview
                                 {
+                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
-                                caseDetails = JsonConvert.SerializeObject(awaitingReview, Formatting.Indented);
+                                caseDetails = JsonConvert.SerializeObject(awaitingReview);
                                 break;
                             case "awaiting-customer":
                                 AwaitingCustomer awaitingCustomer = new AwaitingCustomer
                                 {
+                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
-                                caseDetails = JsonConvert.SerializeObject(awaitingCustomer, Formatting.Indented);
+                                caseDetails = JsonConvert.SerializeObject(awaitingCustomer);
                                 break;
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
                                 {
+                                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
-                                caseDetails = JsonConvert.SerializeObject(closeCase, Formatting.Indented);
+                                caseDetails = JsonConvert.SerializeObject(closeCase);
                                 break;
                             default:
                                 await SendFailureAsync("Unexpected transition for " + caseReference, transition.ToLower(), taskToken);
@@ -281,18 +284,24 @@ namespace CXMCase2S3
 
         public class AwaitingReview
         {
+            public String Action = "awaiting-review";
+            public String Date { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
 
         public class AwaitingCustomer
         {
+            public String Action = "awaiting-customer";
+            public String Date { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
 
         public class CloseCase
         {
+            public String Action = "close";
+            public String Date { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
