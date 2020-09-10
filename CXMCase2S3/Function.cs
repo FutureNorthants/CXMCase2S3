@@ -38,13 +38,23 @@ namespace CXMCase2S3
         {
             if (await GetSecrets())
             {
-                String instance = Environment.GetEnvironmentVariable("instance");
                 JObject o = JObject.Parse(input.ToString());
                 caseReference = (string)o.SelectToken("CaseReference");
                 transition = (string)o.SelectToken("Transition");
                 transitioner = (string)o.SelectToken("Transitioner");
                 taskToken = (string)o.SelectToken("TaskToken");
                 String fileName = "";
+                String instance = "test";
+                try
+                {
+                    if (context.InvokedFunctionArn.ToLower().Contains("prod"))
+                    {
+                        instance = "live";
+                    }
+                }
+                catch (Exception)
+                {
+                }
                 try
                 {
                     switch (transition.ToLower())
@@ -60,6 +70,9 @@ namespace CXMCase2S3
                             break;
                         case "close-case":
                             fileName = caseReference + "-CLOSE-CASE";
+                            break;
+                        case "forward-via-email":
+                            fileName = caseReference + "-FORWARD";
                             break;
                         default:
                             fileName = caseReference + "-UNDEFINED";
@@ -129,7 +142,7 @@ namespace CXMCase2S3
                 if (response.IsSuccessStatusCode)
                 {
                     HttpContent responseContent = response.Content;
-                    
+                    JObject caseContent = JObject.Parse(await response.Content.ReadAsStringAsync());
                     try
                     {
                         switch (transition.ToLower())
@@ -164,6 +177,16 @@ namespace CXMCase2S3
                                 };
                                 caseDetails = JsonConvert.SerializeObject(closeCase);
                                 break;
+                            case "forward-via-email":
+                                ForwardCase forwardCase = new ForwardCase
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner,
+                                    ToEmail = (String)caseContent["values"]["forward_email_to"]
+                                };
+                                caseDetails = JsonConvert.SerializeObject(forwardCase);
+                                break;
                             default:
                                 await SendFailureAsync("Unexpected transition for " + caseReference, transition.ToLower(), taskToken);
                                 Console.WriteLine("ERROR : GetCaseDetailsAsync : Unexpected transition : " + transition.ToLower());
@@ -188,12 +211,6 @@ namespace CXMCase2S3
                 await SendFailureAsync("Getting case details for " + caseReference, error.Message, taskToken);
                 Console.WriteLine("ERROR : GetStaffResponseAsync : " + error.StackTrace);
             }
-            return caseDetails;
-        }
-
-        private async Task<String> GetClosureDetails()
-        {
-            String caseDetails = "";
             return caseDetails;
         }
 
@@ -304,6 +321,15 @@ namespace CXMCase2S3
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
+        }
+
+        public class ForwardCase
+        {
+            public String Action = "forward";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+            public String ToEmail { get; set; }
         }
     }
 }
