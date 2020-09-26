@@ -153,7 +153,7 @@ namespace CXMCase2S3
                             case "awaiting-review":
                                 AwaitingReview awaitingReview = new AwaitingReview
                                 {
-                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -162,7 +162,7 @@ namespace CXMCase2S3
                             case "awaiting-customer":
                                 AwaitingCustomer awaitingCustomer = new AwaitingCustomer
                                 {
-                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -171,7 +171,7 @@ namespace CXMCase2S3
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
                                 {
-                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -180,7 +180,7 @@ namespace CXMCase2S3
                             case "forward-via-email":
                                 ForwardCase forwardCase = new ForwardCase
                                 {
-                                    ActionDate = DateTime.Now.ToString("yyyy/MM/dd"),
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                     CaseReference = caseReference,
                                     UserEmail = transitioner,
                                     ToEmail = (String)caseContent["values"]["forward_email_to"]
