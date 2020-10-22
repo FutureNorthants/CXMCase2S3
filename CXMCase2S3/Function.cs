@@ -74,6 +74,15 @@ namespace CXMCase2S3
                         case "forward-via-email":
                             fileName = caseReference + "-FORWARD";
                             break;
+                        case "close-case-without-responding":
+                            fileName = caseReference + "-CLOSED-NO-RESPONSE";
+                            break;
+                        case "change-service-area":
+                            fileName = caseReference + "-CHANGE-SERVICE-AREA";
+                            break;
+                        case "being-reviewed":
+                            fileName = caseReference + "-BEING-REVIEWED";
+                            break;
                         default:
                             fileName = caseReference + "-UNDEFINED";
                             break;
@@ -159,6 +168,15 @@ namespace CXMCase2S3
                                 };
                                 caseDetails = JsonConvert.SerializeObject(awaitingReview);
                                 break;
+                            case "being-reviewed":
+                                BeingReviewed beingReviewed = new BeingReviewed
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(beingReviewed);
+                                break;
                             case "awaiting-customer":
                                 AwaitingCustomer awaitingCustomer = new AwaitingCustomer
                                 {
@@ -176,6 +194,25 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(closeCase);
+                                break;
+                            case "close-case-without-responding":
+                                CloseCaseNoResponse closeCaseNoResponse = new CloseCaseNoResponse
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(closeCaseNoResponse);
+                                break;
+                            case "change-service-area":
+                                ChangeCase changeCase = new ChangeCase
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner,
+                                    ToService = (String)caseContent["values"]["service_area_4"]
+                                };
+                                caseDetails = JsonConvert.SerializeObject(changeCase);
                                 break;
                             case "forward-via-email":
                                 ForwardCase forwardCase = new ForwardCase
@@ -227,7 +264,7 @@ namespace CXMCase2S3
                 }
                 else
                 {
-                    bucketName = "nbc-reporting";
+                    bucketName = "nbc-reporting-test";
                 }
    
                     PutObjectRequest putRequest = new PutObjectRequest()
@@ -299,6 +336,14 @@ namespace CXMCase2S3
             public String cxmAPIKeyLive { get; set; }
         }
 
+        public class BeingReviewed
+        {
+            public String Action = "being-reviewed";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
         public class AwaitingReview
         {
             public String Action = "awaiting-review";
@@ -323,6 +368,14 @@ namespace CXMCase2S3
             public String UserEmail { get; set; }
         }
 
+        public class CloseCaseNoResponse
+        {
+            public String Action = "close-no-response";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
         public class ForwardCase
         {
             public String Action = "forward";
@@ -330,6 +383,15 @@ namespace CXMCase2S3
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
             public String ToEmail { get; set; }
+        }
+
+        public class ChangeCase
+        {
+            public String Action = "change-service-area";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+            public String ToService { get; set; }
         }
     }
 }
