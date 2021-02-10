@@ -17,5 +17,8 @@
     "function-name"        : "CXMCase2S3",
     "function-role"        : "arn:aws:iam::898823515462:role/lambdaMyCouncil",
     "tracing-mode"         : "PassThrough",
-    "environment-variables" : ""
+    "environment-variables" : "\"instance\"=\"test\"",
+    "function-description"  : "Store CXM case details to S3",
+    "package-type"          : "Zip",
+    "image-tag"             : ""
 }

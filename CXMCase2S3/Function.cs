@@ -83,6 +83,9 @@ namespace CXMCase2S3
                         case "being-reviewed":
                             fileName = caseReference + "-BEING-REVIEWED";
                             break;
+                        case "awaiting-location-confirmation":
+                            fileName = caseReference + "-AWAITING LOCATION";
+                            break;
                         default:
                             fileName = caseReference + "-UNDEFINED";
                             break;
@@ -185,6 +188,14 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(awaitingCustomer);
+                                break;
+                            case "awaiting-location-confirmation":
+                                AwaitingLocationConfirmation AwaitingLocationConfirmation = new AwaitingLocationConfirmation
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                };
+                                caseDetails = JsonConvert.SerializeObject(AwaitingLocationConfirmation);
                                 break;
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
@@ -358,6 +369,13 @@ namespace CXMCase2S3
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
+        }
+
+        public class AwaitingLocationConfirmation
+        {
+            public String Action = "awaiting-location-confirmation";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
         }
 
         public class CloseCase
