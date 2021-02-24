@@ -30,6 +30,7 @@ namespace CXMCase2S3
         private static String transition;
         private static String transitioner;
         private static String taskToken;
+        private static String fromStatus;
         private static Boolean live = false;
         private Secrets secrets = null;
 
@@ -43,6 +44,7 @@ namespace CXMCase2S3
                 transition = (string)o.SelectToken("Transition");
                 transitioner = (string)o.SelectToken("Transitioner");
                 taskToken = (string)o.SelectToken("TaskToken");
+                fromStatus = (string)o.SelectToken("FromStatus");
                 String fileName = "";
                 String instance = "test";
                 try
@@ -202,9 +204,17 @@ namespace CXMCase2S3
                                 {
                                     ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                     CaseReference = caseReference,
-                                    UserEmail = transitioner
+                                    UserEmail = transitioner,
+                                    CustomerUpdated = (String)caseContent["values"]["customer_has_updated"],
+                                    FromStatus = fromStatus
+                                    
                                 };
+                                if (String.IsNullOrEmpty(closeCase.CustomerUpdated))
+                                {
+                                    closeCase.CustomerUpdated = "N";
+                                }
                                 caseDetails = JsonConvert.SerializeObject(closeCase);
+                                
                                 break;
                             case "close-case-without-responding":
                                 CloseCaseNoResponse closeCaseNoResponse = new CloseCaseNoResponse
@@ -384,6 +394,9 @@ namespace CXMCase2S3
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
+            public String FromStatus { get; set; }
+
+            public String CustomerUpdated { get; set; }
         }
 
         public class CloseCaseNoResponse
