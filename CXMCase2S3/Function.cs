@@ -206,6 +206,7 @@ namespace CXMCase2S3
                                     CaseReference = caseReference,
                                     UserEmail = transitioner,
                                     CustomerUpdated = (String)caseContent["values"]["customer_has_updated"],
+                                    Sovereign = (String)caseContent["values"]["sovereign_council"],
                                     FromStatus = fromStatus
                                     
                                 };
@@ -395,7 +396,7 @@ namespace CXMCase2S3
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
             public String FromStatus { get; set; }
-
+            public String Sovereign { get; set; }
             public String CustomerUpdated { get; set; }
         }
 
