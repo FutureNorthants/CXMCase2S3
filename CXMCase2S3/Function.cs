@@ -85,6 +85,9 @@ namespace CXMCase2S3
                         case "being-reviewed":
                             fileName = caseReference + "-BEING-REVIEWED";
                             break;
+                        case "unitary-awaiting-review":
+                            fileName = caseReference + "-UNITARY-AWAITING-REVIEW";
+                            break;
                         case "awaiting-location-confirmation":
                             fileName = caseReference + "-AWAITING LOCATION";
                             break;
@@ -199,6 +202,15 @@ namespace CXMCase2S3
                                 };
                                 caseDetails = JsonConvert.SerializeObject(AwaitingLocationConfirmation);
                                 break;
+                            case "unitary-awaiting-review":
+                                UnitaryAwaitingReview UnitaryAwaitingReview = new UnitaryAwaitingReview
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(UnitaryAwaitingReview);
+                                break;
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
                                 {
@@ -280,13 +292,21 @@ namespace CXMCase2S3
             try
             {
                 String bucketName = "";
-                if (live)
+                if (live && caseReference.StartsWith("EMA"))
                 {
                     bucketName = "nbc-reporting";
                 }
-                else
+                else if (!live && caseReference.StartsWith("EMA"))
                 {
                     bucketName = "nbc-reporting-test";
+                }
+                else if (!live && caseReference.StartsWith("EMN"))
+                {
+                    bucketName = "nnc-reporting-test";
+                }
+                else if (live && caseReference.StartsWith("EMN"))
+                {
+                    bucketName = "nnc-reporting";
                 }
    
                     PutObjectRequest putRequest = new PutObjectRequest()
@@ -387,6 +407,14 @@ namespace CXMCase2S3
             public String Action = "awaiting-location-confirmation";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
+        }
+
+        public class UnitaryAwaitingReview
+        {
+            public String Action = "unitary-awaiting-review";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
         }
 
         public class CloseCase
