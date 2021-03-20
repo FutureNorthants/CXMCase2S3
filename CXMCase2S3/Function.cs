@@ -59,7 +59,7 @@ namespace CXMCase2S3
                 }
                 catch (Exception)
                 {
-                } 
+                }
                 if (live)
                 {
                     if (caseReference.ToLower().Contains("ema"))
@@ -74,24 +74,25 @@ namespace CXMCase2S3
                         cxmAPIKey = secrets.cxmAPIKeyLiveNorth;
                         cxmAPIName = secrets.cxmAPINameNorth;
                     }
-                    else
-                    {
-                        if (caseReference.ToLower().Contains("ema"))
-                        {
-                            cxmEndPoint = secrets.cxmEndPointTest;
-                            cxmAPIKey = secrets.cxmAPIKeyTest;
-                            cxmAPIName = secrets.cxmAPINameWest;
-                        }
-                        if (caseReference.ToLower().Contains("emn"))
-                        {
-                            cxmEndPoint = secrets.cxmEndPointTestNorth;
-                            cxmAPIKey = secrets.cxmAPIKeyTestNorth;
-                            cxmAPIName = secrets.cxmAPINameNorth;
-
-                        }
-                    }
-                   
                 }
+                else
+                {
+                    if (caseReference.ToLower().Contains("ema"))
+                    {
+                        cxmEndPoint = secrets.cxmEndPointTest;
+                        cxmAPIKey = secrets.cxmAPIKeyTest;
+                        cxmAPIName = secrets.cxmAPINameWest;
+                    }
+                    if (caseReference.ToLower().Contains("emn"))
+                    {
+                        cxmEndPoint = secrets.cxmEndPointTestNorth;
+                        cxmAPIKey = secrets.cxmAPIKeyTestNorth;
+                        cxmAPIName = secrets.cxmAPINameNorth;
+
+                    }
+                }
+                   
+                
                 
                 try
                 {
