@@ -188,7 +188,7 @@ namespace CXMCase2S3
             HttpClient cxmClient = new HttpClient();
             cxmClient.BaseAddress = new Uri(cxmEndPoint);
             String requestParameters = "key=" + cxmAPIKey;
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "/api/service-api/"+cxmAPIName + caseReference + "?" + requestParameters);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "/api/service-api/"+cxmAPIName +"/"+ caseReference + "?" + requestParameters);
             try
             {
                 HttpResponseMessage response = cxmClient.SendAsync(request).Result;
