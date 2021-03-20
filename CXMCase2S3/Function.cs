@@ -31,6 +31,9 @@ namespace CXMCase2S3
         private static String transitioner;
         private static String taskToken;
         private static String fromStatus;
+        private static String cxmEndPoint;
+        private static String cxmAPIKey;
+        private static String cxmAPIName;
         private static Boolean live = false;
         private Secrets secrets = null;
 
@@ -56,7 +59,40 @@ namespace CXMCase2S3
                 }
                 catch (Exception)
                 {
+                } 
+                if (live)
+                {
+                    if (caseReference.ToLower().Contains("ema"))
+                    {
+                        cxmEndPoint = secrets.cxmEndPointLive;
+                        cxmAPIKey = secrets.cxmAPIKeyLive;
+                        cxmAPIName = secrets.cxmAPINameWest;
+                    }
+                    if (caseReference.ToLower().Contains("emn"))
+                    {
+                        cxmEndPoint = secrets.cxmEndPointLiveNorth;
+                        cxmAPIKey = secrets.cxmAPIKeyLiveNorth;
+                        cxmAPIName = secrets.cxmAPINameNorth;
+                    }
+                    else
+                    {
+                        if (caseReference.ToLower().Contains("ema"))
+                        {
+                            cxmEndPoint = secrets.cxmEndPointTest;
+                            cxmAPIKey = secrets.cxmAPIKeyTest;
+                            cxmAPIName = secrets.cxmAPINameWest;
+                        }
+                        if (caseReference.ToLower().Contains("emn"))
+                        {
+                            cxmEndPoint = secrets.cxmEndPointTestNorth;
+                            cxmAPIKey = secrets.cxmAPIKeyTestNorth;
+                            cxmAPIName = secrets.cxmAPINameNorth;
+
+                        }
+                    }
+                   
                 }
+                
                 try
                 {
                     switch (transition.ToLower())
@@ -105,12 +141,12 @@ namespace CXMCase2S3
                 {
                     case "live":
                         live = true;
-                        String caseDetailsLive = await GetCaseDetailsAsync(secrets.cxmEndPointLive, secrets.cxmAPIKeyLive);
+                        String caseDetailsLive = await GetCaseDetailsAsync(cxmEndPoint, cxmAPIKey);
                         await SaveCase(fileName,caseDetailsLive);
                         await SendSuccessAsync();
                         break;
                     case "test":
-                        String caseDetailsTest = await GetCaseDetailsAsync(secrets.cxmEndPointTest, secrets.cxmAPIKeyTest);
+                        String caseDetailsTest = await GetCaseDetailsAsync(cxmEndPoint, cxmAPIKey);
                         await SaveCase(fileName,caseDetailsTest);
                         await SendSuccessAsync();
                         break;
@@ -151,7 +187,7 @@ namespace CXMCase2S3
             HttpClient cxmClient = new HttpClient();
             cxmClient.BaseAddress = new Uri(cxmEndPoint);
             String requestParameters = "key=" + cxmAPIKey;
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "/api/service-api/norbert/case/" + caseReference + "?" + requestParameters);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "/api/service-api/"+cxmAPIName + caseReference + "?" + requestParameters);
             try
             {
                 HttpResponseMessage response = cxmClient.SendAsync(request).Result;
@@ -376,6 +412,12 @@ namespace CXMCase2S3
             public String cxmEndPointLive { get; set; }
             public String cxmAPIKeyTest { get; set; }
             public String cxmAPIKeyLive { get; set; }
+            public String cxmEndPointTestNorth { get; set; }
+            public String cxmEndPointLiveNorth { get; set; }
+            public String cxmAPIKeyTestNorth { get; set; }
+            public String cxmAPIKeyLiveNorth { get; set; }
+            public String cxmAPINameNorth { get; set; }
+            public String cxmAPINameWest { get; set; }
         }
 
         public class BeingReviewed
