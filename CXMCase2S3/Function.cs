@@ -256,8 +256,8 @@ namespace CXMCase2S3
                                     UserEmail = transitioner,
                                     CustomerUpdated = (String)caseContent["values"]["customer_has_updated"],
                                     Sovereign = (String)caseContent["values"]["sovereign_council"],
-                                    FromStatus = fromStatus
-                                    
+                                    FromStatus = fromStatus,
+                                    SovService = (String)caseContent["values"]["sovereign_service_area"]
                                 };
                                 if (String.IsNullOrEmpty(closeCase.CustomerUpdated))
                                 {
@@ -469,6 +469,7 @@ namespace CXMCase2S3
             public String FromStatus { get; set; }
             public String Sovereign { get; set; }
             public String CustomerUpdated { get; set; }
+            public String SovService { get; set; }
         }
 
         public class CloseCaseNoResponse
