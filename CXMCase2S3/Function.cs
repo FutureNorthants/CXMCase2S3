@@ -125,6 +125,12 @@ namespace CXMCase2S3
                         case "unitary-awaiting-review":
                             fileName = caseReference + "-UNITARY-AWAITING-REVIEW";
                             break;
+                        case "unitary-being-reviewed":
+                            fileName = caseReference + "-UNITARY-BEING-REVIEWED";
+                            break;
+                        case "unitary-forward":
+                            fileName = caseReference + "-UNITARY-FORWARD";
+                            break;
                         case "awaiting-location-confirmation":
                             fileName = caseReference + "-AWAITING LOCATION";
                             break;
@@ -247,6 +253,24 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(UnitaryAwaitingReview);
+                                break;
+                            case "unitary-being-reviewed":
+                                UnitaryBeingReviewed UnitaryBeingReviewed = new UnitaryBeingReviewed
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(UnitaryBeingReviewed);
+                                break;
+                            case "unitary-forward":
+                                UnitaryForward UnitaryForward = new UnitaryForward
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(UnitaryForward);
                                 break;
                             case "close-case":
                                 CloseCase closeCase = new CloseCase
@@ -429,6 +453,14 @@ namespace CXMCase2S3
             public String UserEmail { get; set; }
         }
 
+        public class UnitaryBeingReviewed
+        {
+            public String Action = "unitary-being-reviewed";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
         public class AwaitingReview
         {
             public String Action = "awaiting-review";
@@ -455,6 +487,14 @@ namespace CXMCase2S3
         public class UnitaryAwaitingReview
         {
             public String Action = "unitary-awaiting-review";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
+        public class UnitaryForward
+        {
+            public String Action = "unitary-forward";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
