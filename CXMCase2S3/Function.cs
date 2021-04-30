@@ -125,6 +125,15 @@ namespace CXMCase2S3
                         case "unitary-awaiting-review":
                             fileName = caseReference + "-UNITARY-AWAITING-REVIEW";
                             break;
+                        case "hub-awaiting-review":
+                            fileName = caseReference + "-HUB-AWAITING-REVIEW";
+                            break;
+                        case "hub-being-reviewed":
+                            fileName = caseReference + "-HUB-BEING-REVIEWED";
+                            break;
+                        case "hub-to-review":
+                            fileName = caseReference + "-HUB-TO-REVIEW";
+                            break;
                         case "unitary-being-reviewed":
                             fileName = caseReference + "-UNITARY-BEING-REVIEWED";
                             break;
@@ -133,6 +142,9 @@ namespace CXMCase2S3
                             break;
                         case "awaiting-location-confirmation":
                             fileName = caseReference + "-AWAITING LOCATION";
+                            break;
+                        case "with-digital":
+                            fileName = caseReference + "-WITH DIGITAL";
                             break;
                         default:
                             fileName = caseReference + "-UNDEFINED";
@@ -228,6 +240,15 @@ namespace CXMCase2S3
                                 };
                                 caseDetails = JsonConvert.SerializeObject(beingReviewed);
                                 break;
+                            case "with-digital":
+                                WithDigital WithDigital = new WithDigital
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(WithDigital);
+                                break;
                             case "awaiting-customer":
                                 AwaitingCustomer awaitingCustomer = new AwaitingCustomer
                                 {
@@ -254,6 +275,15 @@ namespace CXMCase2S3
                                 };
                                 caseDetails = JsonConvert.SerializeObject(UnitaryAwaitingReview);
                                 break;
+                            case "hub-awaiting-review":
+                                HubAwaitingReview HubAwaitingReview = new HubAwaitingReview
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(HubAwaitingReview);
+                                break;
                             case "unitary-being-reviewed":
                                 UnitaryBeingReviewed UnitaryBeingReviewed = new UnitaryBeingReviewed
                                 {
@@ -262,6 +292,15 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(UnitaryBeingReviewed);
+                                break;
+                            case "hub-being-reviewed":
+                                HubBeingReviewed HubBeingReviewed = new HubBeingReviewed
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(HubBeingReviewed);
                                 break;
                             case "unitary-forward":
                                 UnitaryForward UnitaryForward = new UnitaryForward
@@ -298,6 +337,15 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(closeCaseNoResponse);
+                                break;
+                            case "hub-to-review":
+                                HubToReview HubToReview = new HubToReview
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(HubToReview);
                                 break;
                             case "change-service-area":
                                 ChangeCase changeCase = new ChangeCase
@@ -452,10 +500,31 @@ namespace CXMCase2S3
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
         }
+        public class WithDigital
+        {
+            public String Action = "with-digital";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
 
         public class UnitaryBeingReviewed
         {
             public String Action = "unitary-being-reviewed";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+        public class HubBeingReviewed
+        {
+            public String Action = "hub-being-reviewed";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+        public class HubToReview
+        {
+            public String Action = "hub-to-review";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
@@ -487,6 +556,14 @@ namespace CXMCase2S3
         public class UnitaryAwaitingReview
         {
             public String Action = "unitary-awaiting-review";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+
+        public class HubAwaitingReview
+        {
+            public String Action = "hub-awaiting-review";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
