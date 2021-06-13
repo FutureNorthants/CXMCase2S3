@@ -400,6 +400,7 @@ namespace CXMCase2S3
             AmazonS3Client client = new AmazonS3Client(primaryRegion);
             try
             {
+                //TODO Secrets!
                 String bucketName = "";
                 if (live && caseReference.StartsWith("EMA"))
                 {
@@ -411,11 +412,11 @@ namespace CXMCase2S3
                 }
                 else if (!live && caseReference.StartsWith("EMN"))
                 {
-                    bucketName = "nnc-reporting-test";
+                    bucketName = "nnc.reporting.test";
                 }
                 else if (live && caseReference.StartsWith("EMN"))
                 {
-                    bucketName = "nnc-reporting";
+                    bucketName = "nnc.reporting.live";
                 }
    
                     PutObjectRequest putRequest = new PutObjectRequest()
