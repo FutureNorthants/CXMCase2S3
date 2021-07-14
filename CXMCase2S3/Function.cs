@@ -146,6 +146,9 @@ namespace CXMCase2S3
                         case "with-digital":
                             fileName = caseReference + "-WITH DIGITAL";
                             break;
+                        case "test-case-closed":
+                            fileName = caseReference + "-TEST-CASE-CLOSED";
+                            break;
                         default:
                             fileName = caseReference + "-UNDEFINED";
                             break;
@@ -337,6 +340,15 @@ namespace CXMCase2S3
                                     UserEmail = transitioner
                                 };
                                 caseDetails = JsonConvert.SerializeObject(closeCaseNoResponse);
+                                break;
+                            case "test-case-closed":
+                                TestCaseClosed testCaseClosed = new TestCaseClosed
+                                {
+                                    ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    CaseReference = caseReference,
+                                    UserEmail = transitioner
+                                };
+                                caseDetails = JsonConvert.SerializeObject(testCaseClosed);
                                 break;
                             case "hub-to-review":
                                 HubToReview HubToReview = new HubToReview
@@ -593,6 +605,13 @@ namespace CXMCase2S3
         public class CloseCaseNoResponse
         {
             public String Action = "close-no-response";
+            public String ActionDate { get; set; }
+            public String CaseReference { get; set; }
+            public String UserEmail { get; set; }
+        }
+        public class TestCaseClosed
+        {
+            public String Action = "test-case-closed";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
