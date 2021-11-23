@@ -265,6 +265,7 @@ namespace CXMCase2S3
                                 AwaitingLocationConfirmation AwaitingLocationConfirmation = new AwaitingLocationConfirmation
                                 {
                                     ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    Comments = (String)caseContent["values"]["email_comments"],
                                     CaseReference = caseReference,
                                 };
                                 caseDetails = JsonConvert.SerializeObject(AwaitingLocationConfirmation);
@@ -273,6 +274,7 @@ namespace CXMCase2S3
                                 UnitaryAwaitingReview UnitaryAwaitingReview = new UnitaryAwaitingReview
                                 {
                                     ActionDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    Comments = (String)caseContent["values"]["email_comments"],
                                     CaseReference = caseReference,
                                     UserEmail = transitioner
                                 };
@@ -564,6 +566,7 @@ namespace CXMCase2S3
             public String Action = "awaiting-location-confirmation";
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
+            public String Comments { get; set; }
         }
 
         public class UnitaryAwaitingReview
@@ -572,6 +575,7 @@ namespace CXMCase2S3
             public String ActionDate { get; set; }
             public String CaseReference { get; set; }
             public String UserEmail { get; set; }
+            public String Comments { get; set; }
         }
 
         public class HubAwaitingReview
